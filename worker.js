@@ -5,8 +5,8 @@ const filesToCache = [
 	"AdventureFavIcon_16x16.png",
 	"AdventureFavIcon_192x192.png",
 	"AdventureFavIcon_512x512.png",
-	"AdventureGameGame.htm",
-	"AdventureGameGame.js",
+	"AdventureGame.htm",
+	"AdventureGame.js",
 	"AdventureShare.png"
 ];
 
