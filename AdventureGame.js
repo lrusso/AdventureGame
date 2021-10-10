@@ -213,7 +213,7 @@ AdventureGame.Game.prototype = {
 	create: function()
 		{
 		// CHECKING IS THE GAME IS RUNNING IN A MOBILE DEVICE
-		this.isMobileDevice = isMobileDevice();
+		this.isMobileDevice = !isMobileDevice();
 
 		// ADDING THE PAD PLUGIN
 		this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
@@ -366,6 +366,7 @@ AdventureGame.Game.prototype = {
 
 	update: function()
 		{
+		// MOVING THE BACKGROUND AND CLOUDS
 		this.background1.tilePosition.x = this.background1.tilePosition.x - 0.5;
 		this.background2.tilePosition.x = this.background2.tilePosition.x - 0.5;
 
@@ -380,10 +381,6 @@ AdventureGame.Game.prototype = {
 		// CHECKING IF A LEFT MOVEMENT MUST BE PERFORMED
 		if ((moveLeft==true && moveUp==false && moveRight==false) || (this.stick.isDown==true && this.stick.octant==180))
 			{
-			// MOVING THE LANDSCAPE AND TREES
-			this.background3.tilePosition.x = this.background3.tilePosition.x + 1;
-			this.background4.tilePosition.x = this.background4.tilePosition.x + 1;
-
 			// MOVING THE HERO TO THE LEFT
 			this.moveLeft();
 
@@ -394,10 +391,6 @@ AdventureGame.Game.prototype = {
 		// CHECKING IF A RIGHT MOVEMENT MUST BE PERFORMED
 		if ((moveRight==true && moveUp==false && moveLeft==false) || (this.stick.isDown==true && (this.stick.octant==0 || this.stick.octant==360)))
 			{
-			// MOVING THE LANDSCAPE AND TREES
-			this.background3.tilePosition.x = this.background3.tilePosition.x - 1;
-			this.background4.tilePosition.x = this.background4.tilePosition.x - 1;
-
 			// MOVING THE HERO TO THE RIGHT
 			this.moveRight();
 
@@ -415,6 +408,52 @@ AdventureGame.Game.prototype = {
 			someMovement = true;
 			}
 
+		// CHECKING IF A RIGHT-TOP MOVEMENT MUST BE PERFORMED
+		if ((moveRight==true && moveUp==true && moveLeft==false) || (this.stick.isDown==true && this.stick.octant==315))
+			{
+			// MOVING THE HERO TO THE RIGHT
+			this.moveRight();
+
+			// SETTING THAT THE HERO WILL JUMP
+			this.jump();
+
+			// SETTING THAT A MOVEMENT HAPPENED
+			someMovement = true;
+			}
+
+		// CHECKING IF A RIGHT-DOWN MOVEMENT MUST BE PERFORMED
+		if ((moveRight==true && moveUp==false && moveLeft==false) || (this.stick.isDown==true && this.stick.octant==45))
+			{
+			// MOVING THE HERO TO THE RIGHT
+			this.moveRight();
+
+			// SETTING THAT A MOVEMENT HAPPENED
+			someMovement = true;
+			}
+
+		// CHECKING IF A LEFT-TOP MOVEMENT MUST BE PERFORMED
+		if ((moveLeft==true && moveUp==true && moveRight==false) || (this.stick.isDown==true && this.stick.octant==225))
+			{
+			// MOVING THE HERO TO THE LEFT
+			this.moveLeft();
+
+			// SETTING THAT THE HERO WILL JUMP
+			this.jump();
+
+			// SETTING THAT A MOVEMENT HAPPENED
+			someMovement = true;
+			}
+
+		// CHECKING IF A LEFT-DOWN MOVEMENT MUST BE PERFORMED
+		if ((moveLeft==true && moveUp==false && moveRight==false) || (this.stick.isDown==true && this.stick.octant==135))
+			{
+			// MOVING THE HERO TO THE LEFT
+			this.moveLeft();
+
+			// SETTING THAT A MOVEMENT HAPPENED
+			someMovement = true;
+			}
+
 		// CHECKING IF THERE WASN'T A MOVEMENT
 		if (someMovement==false)
 			{
@@ -425,6 +464,10 @@ AdventureGame.Game.prototype = {
 
 	moveLeft: function()
 		{
+		// MOVING THE LANDSCAPE AND TREES
+		this.background3.tilePosition.x = this.background3.tilePosition.x + 0.35;
+		this.background4.tilePosition.x = this.background4.tilePosition.x + 0.35;
+
 		// MOVING THE HERO TO THE LEFT
 		this.hero.body.moveLeft(100);
 
@@ -446,6 +489,10 @@ AdventureGame.Game.prototype = {
 
 	moveRight: function()
 		{
+		// MOVING THE LANDSCAPE AND TREES
+		this.background3.tilePosition.x = this.background3.tilePosition.x - 0.35;
+		this.background4.tilePosition.x = this.background4.tilePosition.x - 0.35;
+
 		// MOVING THE HERO TO THE RIGHT
 		this.hero.body.moveRight(100);
 
