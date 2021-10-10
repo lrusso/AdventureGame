@@ -270,7 +270,7 @@ AdventureGame.Game.prototype = {
 
 		// SETTING THE PHYSICS RULES
 		this.game.physics.p2.restitution = 0;
-		this.game.physics.p2.gravity.y = 300;
+		this.game.physics.p2.gravity.y = 2000;
 
 		// ADDING THE HERO
 		this.hero = game.add.sprite(80, 169, "imageHero");
@@ -521,7 +521,7 @@ AdventureGame.Game.prototype = {
 		if (game.time.now > this.jumpTimer && heroCanJump==true)
 			{
 			// MOVING THE HERO UP
-			this.hero.body.moveUp(200);
+			this.hero.body.moveUp(500);
 
 			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
 			this.jumpTimer = game.time.now + 750;
@@ -568,7 +568,7 @@ AdventureGame.Game.prototype = {
 			if (this.hero.body.velocity.y>0)
 				{
 				// SPEEDING THE HERO'S FALLING MOVEMENT
-				this.hero.body.velocity.y = 200;
+				this.hero.body.velocity.y = 400;
 				}
 			// CHECKING IF THE HERO IS JUMPING 
 			else if (this.hero.body.velocity.y<-150)
