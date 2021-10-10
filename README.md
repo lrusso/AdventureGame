@@ -2,7 +2,7 @@
 
 Adventure Game in JavaScript.
 
-![alt screenshot](https://raw.githubusercontent.com/lrusso/AdventureGame/master/Adventure.png)
+![alt screenshot](https://raw.githubusercontent.com/lrusso/AdventureGame/main/Adventure.png)
 
 ## Web:
 
