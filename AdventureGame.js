@@ -297,8 +297,8 @@ AdventureGame.Game.prototype = {
 		this.game.camera.follow(this.hero);
 
 		// ADDING THE STICK FOR MOBILE DEVICES
-		this.stick = this.pad.addDPad(100, 385, 0, "dpad");
-		this.stick.sprite.scale.set(0.8);
+		this.stick = this.pad.addDPad(120, 370, 0, "dpad");
+		this.stick.sprite.scale.set(1.1);
 		this.stick.sprite.tint = 0xA9A9A9;
 		this.stick.sprite.inputEnabled = true;
 		this.stick.sprite.events.onInputDown.add(function(){this.update();},this);
@@ -306,22 +306,22 @@ AdventureGame.Game.prototype = {
 		this.stick.visible = false;
 
 		// ADDING THE SWORD NORMAL BUTTON
-		this.buttonSwordNormal = game.add.sprite(604, 333, "imageButtonNormal");
+		this.buttonSwordNormal = game.add.sprite(544, 283, "imageButtonNormal");
 		this.buttonSwordNormal.fixedToCamera = true;
 		this.buttonSwordNormal.tint = 0xAFAFAF;
-		this.buttonSwordNormal.scale.set(0.9);
+		this.buttonSwordNormal.scale.set(1.5);
 		this.buttonSwordNormal.visible = false;
 
 		// ADDING THE SWORD PRESSED BUTTON
-		this.buttonSwordPressed = game.add.sprite(604, 333, "imageButtonPressed");
+		this.buttonSwordPressed = game.add.sprite(544, 283, "imageButtonPressed");
 		this.buttonSwordPressed.fixedToCamera = true;
 		this.buttonSwordPressed.tint = 0xAFAFAF;
-		this.buttonSwordPressed.scale.set(0.9);
+		this.buttonSwordPressed.scale.set(1.5);
 		this.buttonSwordPressed.visible = false;
 
 		// ADDING THE SWORD ICON IN THE SWORD BUTTON
-		this.buttonSwordIcon = game.add.sprite(649, 379, "imageButtonSword");
-		this.buttonSwordIcon.scale.set(0.7);
+		this.buttonSwordIcon = game.add.sprite(629, 369, "imageButtonSword");
+		this.buttonSwordIcon.scale.set(0.9);
 		this.buttonSwordIcon.alpha = 0.6;
 		this.buttonSwordIcon.tint = 0xA9A9A9;
 		this.buttonSwordIcon.fixedToCamera = true;
