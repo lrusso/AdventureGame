@@ -1,13 +1,13 @@
 const filesToCache = [
-	"AdventureGame.htm",
-	"AdventureGame.json",
-	"AdventureGame.png",
-	"AdventureGameFavIcon_16x16.png",
-	"AdventureGameFavIcon_192x192.png",
-	"AdventureGameFavIcon_512x512.png",
+	"Adventure.htm",
+	"Adventure.json",
+	"Adventure.png",
+	"AdventureFavIcon_16x16.png",
+	"AdventureFavIcon_192x192.png",
+	"AdventureFavIcon_512x512.png",
 	"AdventureGameGame.htm",
 	"AdventureGameGame.js",
-	"AdventureGameShare.png"
+	"AdventureShare.png"
 ];
 
 const staticCacheName = "adventuregame-v1";
