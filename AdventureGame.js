@@ -287,8 +287,11 @@ AdventureGame.Game.prototype = {
 		// ENABLING PHYSICS FOR THE HERO
 		game.physics.p2.enable(this.hero);
 
-		// DISABLING ROTATION FOR THE HERO'S BODY
+		// DISABLING ROTATION FOR THE HERO'S BODY AND PREVENTING BOUNCING
 		this.hero.body.fixedRotation = true;
+		this.hero.body.damping = 0;
+		this.hero.body.friction = -99;
+		this.hero.body.angularDamping = 0;
 
 		// SETTING THAT THE CAMERA WILL FOLLOW THE HERO
 		this.game.camera.follow(this.hero);
@@ -429,7 +432,7 @@ AdventureGame.Game.prototype = {
 		this.facing = "left";
 
 		// CHECKING IF THE HERO IS FALLING
-		if (Math.abs(this.hero.body.velocity.y)>0.2)
+		if (this.heroCanJump()==false)
 			{
 			// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
 			this.hero.animations.play("fallLeft");
@@ -450,7 +453,7 @@ AdventureGame.Game.prototype = {
 		this.facing = "right";
 
 		// CHECKING IF THE HERO IS FALLING
-		if (Math.abs(this.hero.body.velocity.y)>0.2)
+		if (this.heroCanJump()==false)
 			{
 			// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
 			this.hero.animations.play("fallRight");
@@ -465,20 +468,32 @@ AdventureGame.Game.prototype = {
 	jump: function()
 		{
 		// CHECKING IF ENOUGH TIME HAPPENED AFTER THE LAST JUMP AND IF THE HERO CAN JUMP
-		if (game.time.now > this.jumpTimer && this.checkIfCanJump()==true)
+		if (game.time.now > this.jumpTimer && this.heroCanJump()==true)
 			{
 			// MOVING THE HERO UP
 			this.hero.body.moveUp(100);
 
 			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
 			this.jumpTimer = game.time.now + 750;
+
+			// CHECKING IF THE HERO IS FACING LEFT
+			if (this.facing == "left")
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
+				this.hero.animations.play("fallLeft");
+				}
+			else
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
+				this.hero.animations.play("fallRight");
+				}
 			}
 		},
 
 	stand: function()
 		{
 		// CHECKING IF THE HERO IS FALLING
-		if (Math.abs(this.hero.body.velocity.y)>0.2)
+		if (this.heroCanJump()==false)
 			{
 			// CHECKING IF THE HERO IS FACING LEFT
 			if (this.facing == "left")
@@ -512,7 +527,7 @@ AdventureGame.Game.prototype = {
 			}
 		},
 
-	checkIfCanJump: function()
+	heroCanJump: function()
 		{
 		var yAxis = p2.vec2.fromValues(0, 1);
 		var result = false;
