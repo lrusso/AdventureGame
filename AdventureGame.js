@@ -263,14 +263,14 @@ AdventureGame.Game.prototype = {
 		this.layer.resizeWorld();
 
 		// SETTING THE COLLISION TILES
-		this.map.setCollisionBetween(11,12);
+		this.map.setCollisionBetween(11,11);
 
 		// CONVERTING THE TILES TO OBSTACLES
 		this.game.physics.p2.convertTilemap(this.map, this.layer);
 
 		// SETTING THE PHYSICS RULES
 		this.game.physics.p2.restitution = 0;
-		this.game.physics.p2.gravity.y = 100;
+		this.game.physics.p2.gravity.y = 300;
 
 		// ADDING THE HERO
 		this.hero = game.add.sprite(80, 169, "imageHero");
@@ -460,6 +460,35 @@ AdventureGame.Game.prototype = {
 			// SETTING THAT THE HERO BE STAND
 			this.stand();
 			}
+
+		// CHECKING IF THE HERO IS FALLING
+		if (this.heroCanJump()==false)
+			{
+			// CHECKING IF THE HERO IS FALLING
+			if (this.hero.body.velocity.y>0)
+				{
+				// SPEEDING THE HERO'S FALLING MOVEMENT
+				this.hero.body.velocity.y = 200;
+				}
+			// CHECKING IF THE HERO IS JUMPING 
+			else if (this.hero.body.velocity.y<-150)
+				{
+				// SETTING A MAX SPEED FOR JUMPING
+				this.hero.body.velocity.y = -150;
+				}
+
+			// CHECKING IF THE HERO IS FACING LEFT
+			if (this.facing == "left")
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
+				this.hero.animations.play("fallLeft");
+				}
+			else
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
+				this.hero.animations.play("fallRight");
+				}
+			}
 		},
 
 	moveLeft: function()
@@ -469,7 +498,7 @@ AdventureGame.Game.prototype = {
 		this.background4.tilePosition.x = this.background4.tilePosition.x + 0.35;
 
 		// MOVING THE HERO TO THE LEFT
-		this.hero.body.moveLeft(100);
+		this.hero.body.moveLeft(200);
 
 		// SETTING THAT THE HERO WILL BE FACING TO THE LEFT
 		this.facing = "left";
@@ -494,7 +523,7 @@ AdventureGame.Game.prototype = {
 		this.background4.tilePosition.x = this.background4.tilePosition.x - 0.35;
 
 		// MOVING THE HERO TO THE RIGHT
-		this.hero.body.moveRight(100);
+		this.hero.body.moveRight(200);
 
 		// SETTING THAT THE HERO WILL BE FACING TO THE RIGHT
 		this.facing = "right";
@@ -518,7 +547,7 @@ AdventureGame.Game.prototype = {
 		if (game.time.now > this.jumpTimer && this.heroCanJump()==true)
 			{
 			// MOVING THE HERO UP
-			this.hero.body.moveUp(100);
+			this.hero.body.moveUp(200);
 
 			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
 			this.jumpTimer = game.time.now + 750;
@@ -540,24 +569,11 @@ AdventureGame.Game.prototype = {
 	stand: function()
 		{
 		// CHECKING IF THE HERO IS FALLING
-		if (this.heroCanJump()==false)
-			{
-			// CHECKING IF THE HERO IS FACING LEFT
-			if (this.facing == "left")
-				{
-				// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
-				this.hero.animations.play("fallLeft");
-				}
-			else
-				{
-				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
-				this.hero.animations.play("fallRight");
-				}
-			}
-			else
+		if (this.heroCanJump()==true)
 			{
 			// STOPPING THE HERO'S BODY
 			this.hero.body.velocity.x = 0;
+			this.hero.body.velocity.y = 0;
 
 			// CHECKING IF THE HERO IS FACING LEFT
 			if (this.facing == "left")
