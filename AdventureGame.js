@@ -375,6 +375,9 @@ AdventureGame.Game.prototype = {
 		var moveLeft = this.cursors.left.isDown || this.keyA.isDown;
 		var moveRight = this.cursors.right.isDown || this.keyD.isDown;
 
+		// CHECKING IF THE HERO CAN JUMP
+		var heroCanJump = this.heroCanJump();
+
 		// VARIABLE TO CHECK IF THERE WAS A MOVEMENT AFTER ALL THE VALIDATIONS
 		var someMovement = false;
 
@@ -382,7 +385,7 @@ AdventureGame.Game.prototype = {
 		if ((moveLeft==true && moveUp==false && moveRight==false) || (this.stick.isDown==true && this.stick.octant==180))
 			{
 			// MOVING THE HERO TO THE LEFT
-			this.moveLeft();
+			this.moveLeft(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -392,7 +395,7 @@ AdventureGame.Game.prototype = {
 		if ((moveRight==true && moveUp==false && moveLeft==false) || (this.stick.isDown==true && (this.stick.octant==0 || this.stick.octant==360)))
 			{
 			// MOVING THE HERO TO THE RIGHT
-			this.moveRight();
+			this.moveRight(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -402,7 +405,7 @@ AdventureGame.Game.prototype = {
 		if (moveUp==true || (this.stick.isDown==true && this.stick.octant==270))
 			{
 			// SETTING THAT THE HERO WILL JUMP
-			this.jump();
+			this.jump(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -412,10 +415,10 @@ AdventureGame.Game.prototype = {
 		if ((moveRight==true && moveUp==true && moveLeft==false) || (this.stick.isDown==true && this.stick.octant==315))
 			{
 			// MOVING THE HERO TO THE RIGHT
-			this.moveRight();
+			this.moveRight(heroCanJump);
 
 			// SETTING THAT THE HERO WILL JUMP
-			this.jump();
+			this.jump(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -425,7 +428,7 @@ AdventureGame.Game.prototype = {
 		if ((moveRight==true && moveUp==false && moveLeft==false) || (this.stick.isDown==true && this.stick.octant==45))
 			{
 			// MOVING THE HERO TO THE RIGHT
-			this.moveRight();
+			this.moveRight(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -435,10 +438,10 @@ AdventureGame.Game.prototype = {
 		if ((moveLeft==true && moveUp==true && moveRight==false) || (this.stick.isDown==true && this.stick.octant==225))
 			{
 			// MOVING THE HERO TO THE LEFT
-			this.moveLeft();
+			this.moveLeft(heroCanJump);
 
 			// SETTING THAT THE HERO WILL JUMP
-			this.jump();
+			this.jump(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -448,7 +451,7 @@ AdventureGame.Game.prototype = {
 		if ((moveLeft==true && moveUp==false && moveRight==false) || (this.stick.isDown==true && this.stick.octant==135))
 			{
 			// MOVING THE HERO TO THE LEFT
-			this.moveLeft();
+			this.moveLeft(heroCanJump);
 
 			// SETTING THAT A MOVEMENT HAPPENED
 			someMovement = true;
@@ -458,11 +461,108 @@ AdventureGame.Game.prototype = {
 		if (someMovement==false)
 			{
 			// SETTING THAT THE HERO BE STAND
-			this.stand();
+			this.stand(heroCanJump);
 			}
+		},
+
+	moveLeft: function(heroCanJump)
+		{
+		// MOVING THE LANDSCAPE AND TREES
+		this.background3.tilePosition.x = this.background3.tilePosition.x + 0.35;
+		this.background4.tilePosition.x = this.background4.tilePosition.x + 0.35;
+
+		// MOVING THE HERO TO THE LEFT
+		this.hero.body.moveLeft(200);
+
+		// SETTING THAT THE HERO WILL BE FACING TO THE LEFT
+		this.facing = "left";
 
 		// CHECKING IF THE HERO IS FALLING
-		if (this.heroCanJump()==false)
+		if (heroCanJump==false)
+			{
+			// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
+			this.hero.animations.play("fallLeft");
+			}
+		else
+			{
+			// SETTING THAT THE HERO WILL BE SHOWING THE RUN LEFT ANIMATION
+			this.hero.animations.play("runLeft");
+			}
+		},
+
+	moveRight: function(heroCanJump)
+		{
+		// MOVING THE LANDSCAPE AND TREES
+		this.background3.tilePosition.x = this.background3.tilePosition.x - 0.35;
+		this.background4.tilePosition.x = this.background4.tilePosition.x - 0.35;
+
+		// MOVING THE HERO TO THE RIGHT
+		this.hero.body.moveRight(200);
+
+		// SETTING THAT THE HERO WILL BE FACING TO THE RIGHT
+		this.facing = "right";
+
+		// CHECKING IF THE HERO IS FALLING
+		if (heroCanJump==false)
+			{
+			// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
+			this.hero.animations.play("fallRight");
+			}
+		else
+			{
+			// SETTING THAT THE HERO WILL BE SHOWING THE RUN RIGHT ANIMATION
+			this.hero.animations.play("runRight");
+			}
+		},
+
+	jump: function(heroCanJump)
+		{
+		// CHECKING IF ENOUGH TIME HAPPENED AFTER THE LAST JUMP AND IF THE HERO CAN JUMP
+		if (game.time.now > this.jumpTimer && heroCanJump==true)
+			{
+			// MOVING THE HERO UP
+			this.hero.body.moveUp(200);
+
+			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
+			this.jumpTimer = game.time.now + 750;
+
+			// CHECKING IF THE HERO IS FACING LEFT
+			if (this.facing == "left")
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
+				this.hero.animations.play("fallLeft");
+				}
+			else
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
+				this.hero.animations.play("fallRight");
+				}
+			}
+		},
+
+	stand: function(heroCanJump)
+		{
+		// CHECKING IF THE HERO IS FALLING
+		if (heroCanJump==true)
+			{
+			// STOPPING THE HERO'S BODY
+			this.hero.body.velocity.x = 0;
+			this.hero.body.velocity.y = 0;
+
+			// CHECKING IF THE HERO IS FACING LEFT
+			if (this.facing == "left")
+				{
+				// SETTING THAT THE HERO WILL BE SHOWING THE STAND LEFT ANIMATION
+				this.hero.animations.play("standLeft");
+				}
+			else
+				{
+				this.facing = "right";
+				// SETTING THAT THE HERO WILL BE SHOWING THE STAND RIGHT ANIMATION
+				this.hero.animations.play("standRight");
+				}
+			}
+		else
 			{
 			// CHECKING IF THE HERO IS FALLING
 			if (this.hero.body.velocity.y>0)
@@ -487,105 +587,6 @@ AdventureGame.Game.prototype = {
 				{
 				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
 				this.hero.animations.play("fallRight");
-				}
-			}
-		},
-
-	moveLeft: function()
-		{
-		// MOVING THE LANDSCAPE AND TREES
-		this.background3.tilePosition.x = this.background3.tilePosition.x + 0.35;
-		this.background4.tilePosition.x = this.background4.tilePosition.x + 0.35;
-
-		// MOVING THE HERO TO THE LEFT
-		this.hero.body.moveLeft(200);
-
-		// SETTING THAT THE HERO WILL BE FACING TO THE LEFT
-		this.facing = "left";
-
-		// CHECKING IF THE HERO IS FALLING
-		if (this.heroCanJump()==false)
-			{
-			// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
-			this.hero.animations.play("fallLeft");
-			}
-		else
-			{
-			// SETTING THAT THE HERO WILL BE SHOWING THE RUN LEFT ANIMATION
-			this.hero.animations.play("runLeft");
-			}
-		},
-
-	moveRight: function()
-		{
-		// MOVING THE LANDSCAPE AND TREES
-		this.background3.tilePosition.x = this.background3.tilePosition.x - 0.35;
-		this.background4.tilePosition.x = this.background4.tilePosition.x - 0.35;
-
-		// MOVING THE HERO TO THE RIGHT
-		this.hero.body.moveRight(200);
-
-		// SETTING THAT THE HERO WILL BE FACING TO THE RIGHT
-		this.facing = "right";
-
-		// CHECKING IF THE HERO IS FALLING
-		if (this.heroCanJump()==false)
-			{
-			// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
-			this.hero.animations.play("fallRight");
-			}
-		else
-			{
-			// SETTING THAT THE HERO WILL BE SHOWING THE RUN RIGHT ANIMATION
-			this.hero.animations.play("runRight");
-			}
-		},
-
-	jump: function()
-		{
-		// CHECKING IF ENOUGH TIME HAPPENED AFTER THE LAST JUMP AND IF THE HERO CAN JUMP
-		if (game.time.now > this.jumpTimer && this.heroCanJump()==true)
-			{
-			// MOVING THE HERO UP
-			this.hero.body.moveUp(200);
-
-			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
-			this.jumpTimer = game.time.now + 750;
-
-			// CHECKING IF THE HERO IS FACING LEFT
-			if (this.facing == "left")
-				{
-				// SETTING THAT THE HERO WILL BE SHOWING THE FALL LEFT ANIMATION
-				this.hero.animations.play("fallLeft");
-				}
-			else
-				{
-				// SETTING THAT THE HERO WILL BE SHOWING THE FALL RIGHT ANIMATION
-				this.hero.animations.play("fallRight");
-				}
-			}
-		},
-
-	stand: function()
-		{
-		// CHECKING IF THE HERO IS FALLING
-		if (this.heroCanJump()==true)
-			{
-			// STOPPING THE HERO'S BODY
-			this.hero.body.velocity.x = 0;
-			this.hero.body.velocity.y = 0;
-
-			// CHECKING IF THE HERO IS FACING LEFT
-			if (this.facing == "left")
-				{
-				// SETTING THAT THE HERO WILL BE SHOWING THE STAND LEFT ANIMATION
-				this.hero.animations.play("standLeft");
-				}
-			else
-				{
-				this.facing = "right";
-				// SETTING THAT THE HERO WILL BE SHOWING THE STAND RIGHT ANIMATION
-				this.hero.animations.play("standRight");
 				}
 			}
 		},
