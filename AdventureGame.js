@@ -320,8 +320,8 @@ AdventureGame.Game.prototype = {
 		this.buttonSwordPressed.visible = false;
 
 		// ADDING THE SWORD ICON IN THE SWORD BUTTON
-		this.buttonSwordIcon = game.add.sprite(629, 369, "imageButtonSword");
-		this.buttonSwordIcon.scale.set(0.9);
+		this.buttonSwordIcon = game.add.sprite(619, 360, "imageButtonSword");
+		this.buttonSwordIcon.scale.set(1.2);
 		this.buttonSwordIcon.alpha = 0.6;
 		this.buttonSwordIcon.tint = 0xA9A9A9;
 		this.buttonSwordIcon.fixedToCamera = true;
