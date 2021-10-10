@@ -213,7 +213,7 @@ AdventureGame.Game.prototype = {
 	create: function()
 		{
 		// CHECKING IS THE GAME IS RUNNING IN A MOBILE DEVICE
-		this.isMobileDevice = !isMobileDevice();
+		this.isMobileDevice = isMobileDevice();
 
 		// ADDING THE PAD PLUGIN
 		this.pad = this.game.plugins.add(Phaser.VirtualJoystick);
