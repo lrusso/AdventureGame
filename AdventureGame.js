@@ -515,7 +515,7 @@ AdventureGame.Game.prototype = {
 
 	jump: function(heroCanJump)
 		{
-		// CHECKING IF HERO CAN JUMP
+		// CHECKING IF THE HERO CAN JUMP
 		if (heroCanJump==true)
 			{
 			// MOVING THE HERO UP
