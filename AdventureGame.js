@@ -154,7 +154,6 @@ AdventureGame.Game = function (game)
 	{
 	this.hero = null;
 	this.facing = null;
-	this.jumpTimer = null;
 	this.cursors = null;
 	this.keyA = null;
 	this.keyS = null;
@@ -195,7 +194,6 @@ AdventureGame.Game.prototype = {
 		{
 		this.hero = null;
 		this.facing = "right";
-		this.jumpTimer = 0;
 		this.cursors = null;
 		this.keyA = null;
 		this.keyS = null;
@@ -518,13 +516,10 @@ AdventureGame.Game.prototype = {
 	jump: function(heroCanJump)
 		{
 		// CHECKING IF ENOUGH TIME HAPPENED AFTER THE LAST JUMP AND IF THE HERO CAN JUMP
-		if (game.time.now > this.jumpTimer && heroCanJump==true)
+		if (heroCanJump==true)
 			{
 			// MOVING THE HERO UP
 			this.hero.body.moveUp(500);
-
-			// SETTING THAT NEXT TIME THAT THAT A JUMP CAN HAPPEN AGAIN
-			this.jumpTimer = game.time.now + 750;
 
 			// CHECKING IF THE HERO IS FACING LEFT
 			if (this.facing == "left")
