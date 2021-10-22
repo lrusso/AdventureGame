@@ -515,7 +515,7 @@ AdventureGame.Game.prototype = {
 
 	jump: function(heroCanJump)
 		{
-		// CHECKING IF ENOUGH TIME HAPPENED AFTER THE LAST JUMP AND IF THE HERO CAN JUMP
+		// CHECKING IF HERO CAN JUMP
 		if (heroCanJump==true)
 			{
 			// MOVING THE HERO UP
