@@ -161,6 +161,12 @@ AdventureGame.Game = function (game)
 	this.keyD = null;
 	this.keySpace = null;
 	this.map = null;
+	this.imageStatsHealthContainer = null;
+	this.imageStatsHealthBackground = null;
+	this.imageStatsHealthBorder = null;
+	this.imageStatsHealthMask = null;
+	this.imageStatsHealthValue = null;
+	this.statsHealth = null;
 	this.layer = null;
 	this.background1 = null;
 	this.background2 = null;
@@ -201,6 +207,12 @@ AdventureGame.Game.prototype = {
 		this.keyD = null;
 		this.keySpace = null;
 		this.map = null;
+		this.imageStatsHealthContainer = null;
+		this.imageStatsHealthBackground = null;
+		this.imageStatsHealthBorder = null;
+		this.imageStatsHealthMask = null;
+		this.imageStatsHealthValue = null;
+		this.statsHealth = 80;
 		this.layer = null;
 		this.background1 = null;
 		this.background2 = null;
@@ -242,6 +254,37 @@ AdventureGame.Game.prototype = {
 		this.background4.fixedToCamera = true;
 		this.background4.tileScale.x = 2.66;
 		this.background4.tileScale.y = 2.66;
+
+		// ADDING THE HEALTH METER CONTAINER
+		this.imageStatsHealthContainer = game.add.graphics();
+		this.imageStatsHealthContainer.beginFill(0x000000, 0.35);
+		this.imageStatsHealthContainer.drawRoundedRect(5, 5, 205, 28, 10);
+		this.imageStatsHealthContainer.fixedToCamera = true;
+
+		// ADDING THE HEALTH METER BACKGROUND
+		this.imageStatsHealthBackground = game.add.graphics();
+		this.imageStatsHealthBackground.beginFill(0x000000, 1);
+		this.imageStatsHealthBackground.drawRoundedRect(10, 11, 195, 16, 7);
+		this.imageStatsHealthContainer.addChild(this.imageStatsHealthBackground);
+
+		// ADDING THE HEALTH METER BORDER
+		this.imageStatsHealthBorder = game.add.graphics();
+		this.imageStatsHealthBorder.lineStyle(2, 0x3f2a14, 0.5);
+		this.imageStatsHealthBorder.drawRoundedRect(10, 11, 195, 16, 7);
+		this.imageStatsHealthContainer.addChild(this.imageStatsHealthBorder);
+
+		// ADDING THE HEALTH METER MASK
+		this.imageStatsHealthMask = game.add.graphics();
+		this.imageStatsHealthMask.beginFill(0xFFFFFF, 1)
+		this.imageStatsHealthMask.drawRoundedRect(11, 11, 193, 16, 7);
+		this.imageStatsHealthContainer.addChild(this.imageStatsHealthMask);
+
+		// ADDING THE HEALTH METER VALUE
+		this.imageStatsHealthValue = game.add.graphics();
+		this.imageStatsHealthValue.beginFill(0x9cba45, 1);
+		this.imageStatsHealthValue.drawRect(10, 12, this.statsHealth * 195 / 100, 14, 1);
+		this.imageStatsHealthValue.mask = this.imageStatsHealthMask;
+		this.imageStatsHealthContainer.addChild(this.imageStatsHealthValue);
 
 		// ADDING THE MAP
 		this.map = game.add.tilemap("map");
