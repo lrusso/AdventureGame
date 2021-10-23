@@ -340,9 +340,14 @@ AdventureGame.Game.prototype = {
 		// ENABLING PHYSICS FOR THE HERO
 		game.physics.p2.enable(this.hero);
 
+		// REPLACING THE HERO'S BODY WITH A CIRCLE
+		this.hero.body.setCircle(30);
+		this.hero.anchor.setTo(0.5,0.6);
+
 		// DISABLING ROTATION FOR THE HERO'S BODY AND PREVENTING BOUNCING
 		this.hero.body.fixedRotation = true;
 		this.hero.body.damping = 0;
+		this.hero.body.mass = 99;
 		this.hero.body.friction = -99;
 		this.hero.body.angularDamping = 0;
 
