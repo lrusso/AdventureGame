@@ -22,7 +22,7 @@ AdventureGame.Preloader.prototype = {
 	init: function()
 		{
 		// SETTING THE MAXPOINTERS VALUE
-		this.input.maxPointers = 1;
+		this.input.maxPointers = 2;
 
 		// SETTING THE ROUNDPIXELS PROPERTY TO FALSE (IMPORTANT, DO NOT MODIFY)
 		this.game.renderer.renderSession.roundPixels = false;
@@ -511,7 +511,7 @@ AdventureGame.Game.prototype = {
 				}
 
 			// CHECKING IF A UP MOVEMENT MUST BE PERFORMED
-			if (moveUp==true || (this.stick.isDown==true && this.stick.octant==270))
+			if ((moveUp==true && moveLeft==false && moveRight==false && moveDown==false) || (this.stick.isDown==true && this.stick.octant==270))
 				{
 				// SETTING THAT THE HERO WILL JUMP
 				this.jump(heroCanJump);
