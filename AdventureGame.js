@@ -202,6 +202,7 @@ AdventureGame.Game = function (game)
 	this.background2 = null;
 	this.background3 = null;
 	this.background4 = null;
+	this.lastX = null;
 	this.stick = null;
 	this.buttonSwordNormal = null;
 	this.buttonSwordPressed = null;
@@ -248,6 +249,12 @@ AdventureGame.Game.prototype = {
 		this.background2 = null;
 		this.background3 = null;
 		this.background4 = null;
+		this.lastX = 0;
+		this.stick = null;
+		this.buttonSwordNormal = null;
+		this.buttonSwordPressed = null;
+		this.buttonSwordIcon = null;
+		this.buttonSwordHandler = null;
 		},
 
 	create: function()
@@ -511,7 +518,7 @@ AdventureGame.Game.prototype = {
 				}
 
 			// CHECKING IF A UP MOVEMENT MUST BE PERFORMED
-			if ((moveUp==true && moveLeft==false && moveRight==false && moveDown==false) || (this.stick.isDown==true && this.stick.octant==270))
+			if ((moveUp==true && moveLeft==false && moveRight==false) || (this.stick.isDown==true && this.stick.octant==270))
 				{
 				// SETTING THAT THE HERO WILL JUMP
 				this.jump(heroCanJump);
@@ -588,8 +595,7 @@ AdventureGame.Game.prototype = {
 	moveLeft: function(heroCanJump)
 		{
 		// MOVING THE LANDSCAPE AND TREES
-		this.background3.tilePosition.x = this.background3.tilePosition.x + 0.35;
-		this.background4.tilePosition.x = this.background4.tilePosition.x + 0.35;
+		this.moveLandscape(false);
 
 		// MOVING THE HERO TO THE LEFT
 		this.hero.body.moveLeft(200);
@@ -613,8 +619,7 @@ AdventureGame.Game.prototype = {
 	moveRight: function(heroCanJump)
 		{
 		// MOVING THE LANDSCAPE AND TREES
-		this.background3.tilePosition.x = this.background3.tilePosition.x - 0.35;
-		this.background4.tilePosition.x = this.background4.tilePosition.x - 0.35;
+		this.moveLandscape(true);
 
 		// MOVING THE HERO TO THE RIGHT
 		this.hero.body.moveRight(200);
@@ -745,6 +750,33 @@ AdventureGame.Game.prototype = {
 			}
 
 		return result;
+		},
+
+	moveLandscape: function(movingRight)
+		{
+		// GETTING THE CURRENT HERO POSITION
+		var currentPositionX = Math.abs(Math.ceil(this.hero.position.x));
+
+		// CHECKING IF THE HERO HAS MOVED
+		if (Math.abs(this.lastX-currentPositionX)>3)
+			{
+			// CHECKING IF IT'S MOVING THE THE LEFT
+			if (movingRight==false)
+				{
+				// MOVING THE LANDSCAPE AND TREES TO THE RIGHT
+				this.background3.tilePosition.x = this.background3.tilePosition.x + 0.75;
+				this.background4.tilePosition.x = this.background4.tilePosition.x + 0.75;
+				}
+				else
+				{
+				// MOVING THE LANDSCAPE AND TREES TO THE LEFT
+				this.background3.tilePosition.x = this.background3.tilePosition.x - 0.75;
+				this.background4.tilePosition.x = this.background4.tilePosition.x - 0.75;
+				}
+
+			// UPDATING THE LAST X VALUE
+			this.lastX = currentPositionX;
+			}
 		}
 	};
 
