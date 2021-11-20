@@ -35,6 +35,7 @@ if (userLanguage.substring(0,2)=="es")
 	}
 
 var GAME_OVER = false;
+var GAME_SOUND_ENABLED = false;
 
 var AdventureGame = {};
 
@@ -336,7 +337,6 @@ AdventureGame.Game.prototype = {
 		this.toastText = null;
 		this.endedGame = false;
 		this.audioPlayer = null;
-		this.musicPlayer = null;
 		},
 
 	create: function()
@@ -574,19 +574,19 @@ AdventureGame.Game.prototype = {
 		this.buttonSwordHandler.visible = false;
 
 		// ADDING THE SOUND ON GAME ICON
-		this.buttonSoundOnGameShadow = game.add.sprite(704, 5, "imageSoundOn");
+		this.buttonSoundOnGameShadow = game.add.sprite(704, 8, "imageSoundOn");
 		this.buttonSoundOnGameShadow.tint = 0x000000;
 		this.buttonSoundOnGameShadow.alpha = 0.7;
 		this.buttonSoundOnGameShadow.fixedToCamera = true;
-		this.buttonSoundOnGameShadow.visible = false;
-		this.buttonSoundOnGame = this.add.button(702, 3, "imageSoundOn", null, this, 2, 1, 0);
+		if (GAME_SOUND_ENABLED==false){this.buttonSoundOnGameShadow.visible = false;}
+		this.buttonSoundOnGame = this.add.button(702, 6, "imageSoundOn", null, this, 2, 1, 0);
+		if (GAME_SOUND_ENABLED==false){this.buttonSoundOnGame.visible = false;}
 		this.buttonSoundOnGame.fixedToCamera = true;
-		this.buttonSoundOnGame.visible = false;
 		this.buttonSoundOnGame.inputEnabled = true;
 		this.buttonSoundOnGame.events.onInputUp.add(function()
 			{
 			// SETTING THAT THE SOUND IS DISABLED
-			this.soundEnabled = false;
+			GAME_SOUND_ENABLED = false;
 
 			// SHOWING THE SOUND OFF GAME ICON
 			this.buttonSoundOffGame.visible = true;
@@ -605,17 +605,19 @@ AdventureGame.Game.prototype = {
 			},this);
 
 		// ADDING THE SOUND OFF GAME ICON
-		this.buttonSoundOffGameShadow = game.add.sprite(704, 5, "imageSoundOff");
+		this.buttonSoundOffGameShadow = game.add.sprite(704, 8, "imageSoundOff");
 		this.buttonSoundOffGameShadow.tint = 0x000000;
 		this.buttonSoundOffGameShadow.alpha = 0.7;
+		if (GAME_SOUND_ENABLED==true){this.buttonSoundOffGameShadow.visible=false;}
 		this.buttonSoundOffGameShadow.fixedToCamera = true;
-		this.buttonSoundOffGame = this.add.button(702, 3, "imageSoundOff", null, this, 2, 1, 0);
-		this.buttonSoundOffGame.fixedToCamera = true;
+		this.buttonSoundOffGame = this.add.button(702, 6, "imageSoundOff", null, this, 2, 1, 0);
+		if (GAME_SOUND_ENABLED==true){this.buttonSoundOffGame.visible=false;}
 		this.buttonSoundOffGame.inputEnabled = true;
+		this.buttonSoundOffGame.fixedToCamera = true;
 		this.buttonSoundOffGame.events.onInputUp.add(function()
 			{
 			// SETTING THAT THE SOUND IS ENABLED
-			this.soundEnabled = true;
+			GAME_SOUND_ENABLED = true;
 
 			// SHOWING THE SOUND ON GAME ICON
 			this.buttonSoundOnGame.visible = true;
@@ -762,7 +764,7 @@ AdventureGame.Game.prototype = {
 				this.enemy.animations.play("dying");
 
 				// CHECKING IF THE SOUND IS ENABLED
-				if (this.soundEnabled==true)
+				if (GAME_SOUND_ENABLED==true)
 					{
 					// PLAYING THE SLASH SOUND
 					this.audioPlayer = this.add.audio("soundEnemyDeath");
@@ -1072,7 +1074,7 @@ AdventureGame.Game.prototype = {
 				}
 
 			// CHECKING IF THE SOUND IS ENABLED
-			if (this.soundEnabled==true)
+			if (GAME_SOUND_ENABLED==true)
 				{
 				// PLAYING THE SLASH SOUND
 				this.audioPlayer = this.add.audio("soundSlash");
@@ -1200,6 +1202,36 @@ AdventureGame.Game.prototype = {
 		{
 		// SETTING THAT THE GAME IS OVER
 		GAME_OVER = true;
+
+		// CHECKING IF THE SOUND IS ENABLED
+		if (GAME_SOUND_ENABLED==true)
+			{
+			// CHECKING IF THE BACKGROUND MUSIC PLAYER IS CREATED
+			if(this.musicPlayer!=null)
+				{
+				// DESTROYING THE BACKGROUND MUSIC PLAYER
+				this.musicPlayer.destroy();
+				}
+
+			// SETTING THE AUDIO FILE THAT WILL BE PLAYED AS BACKGROUND MUSIC
+			this.musicPlayer = this.add.audio("musicBackground");
+
+			// SETTING THE BACKGROUND MUSIC VOLUME
+			this.musicPlayer.volume = 0.3;
+
+			// SETTING THAT THE BACKGROUND MUSIC WILL BE LOOPING
+			this.musicPlayer.loop = true;
+
+			// PLAYING THE BACKGROUND MUSIC
+			this.musicPlayer.play();
+
+			// CHECKING IF THE AUDIO PLAYER IS CREATED
+			if(this.audioPlayer!=null)
+				{
+				// DESTROYING THE AUDIO PLAYER
+				this.audioPlayer.destroy();
+				}
+			}
 
 		// RESTARTING THE STATE
 		this.state.restart();
