@@ -612,7 +612,7 @@ AdventureGame.Game.prototype = {
 			}
 
 		// CHECKING IF THE ENEMY IS HURTING THE HERO
-		if (this.checkOverlapping(this.hero,this.enemy)==true)
+		if (this.checkEnemyOverlapping(this.hero,this.enemy)==true)
 			{
 			// CAUSING DAMAGE TO THE HERO
 			this.heroHurted();
@@ -1034,6 +1034,22 @@ AdventureGame.Game.prototype = {
 		return Phaser.Rectangle.intersects(boundsA, boundsB);
 		},
 
+	checkEnemyOverlapping: function(spriteA, spriteB)
+		{
+		var boundsA = spriteA.getBounds();
+
+		// REMOVING THE HERO'S PADDING
+		boundsA.x = boundsA.x + 60;
+		boundsA.width = boundsA.width - 120;
+
+		var boundsB = spriteB.getBounds();
+
+		// REMOVING THE ENEMY'S PADDING
+		boundsB.x = boundsB.x + 10;
+		boundsB.width = boundsB.width - 20;
+
+		return Phaser.Rectangle.intersects(boundsA, boundsB);
+		},
 	gameOver: function()
 		{
 		// SETTING THAT THE GAME IS OVER
