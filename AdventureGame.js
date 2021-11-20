@@ -23,13 +23,13 @@ var STRING_GAMEOVER = "";
 // CHECKING THE USER LANGUAGE
 if (userLanguage.substring(0,2)=="es")
 	{
-	STRING_SIGN = "El cartel dice LRusso.com";
+	STRING_SIGN = "El cartel dice: Ten cuidado";
 	STRING_GAMEWON = String.fromCharCode(161) + "Has ganado!";
 	STRING_GAMEOVER = "Juego perdido. Int" + String.fromCharCode(233) + "ntalo de nuevo.";
 	}
 	else
 	{
-	STRING_SIGN = "The sign says LRusso.com";
+	STRING_SIGN = "The sign says: Be careful";
 	STRING_GAMEWON = "You Won!";
 	STRING_GAMEOVER = "Game Over. Try again.";
 	}
@@ -245,6 +245,7 @@ AdventureGame.Game = function (game)
 	this.background3 = null;
 	this.background4 = null;
 	this.lastX = null;
+	this.lastReceivedAttack = null;
 	this.stick = null;
 	this.buttonSwordNormal = null;
 	this.buttonSwordPressed = null;
@@ -303,6 +304,7 @@ AdventureGame.Game.prototype = {
 		this.background3 = null;
 		this.background4 = null;
 		this.lastX = 0;
+		this.lastReceivedAttack = 0;
 		this.stick = null;
 		this.buttonSwordNormal = null;
 		this.buttonSwordPressed = null;
@@ -595,6 +597,7 @@ AdventureGame.Game.prototype = {
 			this.gameOver();
 			}
 
+		// CHECKING IF THE HERO REACH THE END LINE
 		if (this.checkOverlapping(this.hero,this.endLine)==true)
 			{
 			// WINNING THE GAME
@@ -606,6 +609,19 @@ AdventureGame.Game.prototype = {
 			{
 			// SHOWING THE SIGN CONTENT
 			this.showToast(STRING_SIGN, true);
+			}
+
+		// CHECKING IF THE ENEMY IS HURTING THE HERO
+		if (this.checkOverlapping(this.hero,this.enemy)==true)
+			{
+			this.heroHurted();
+			}
+
+		// CHECKING IF THE HERO IS DEAD
+		if (this.statsHealth<0)
+			{
+			// ENDING THE GAME
+			this.gameOver();
 			}
 
 		// CHECKING IF THE ENEMY IS MOVING TO THE RIGHT
@@ -905,6 +921,22 @@ AdventureGame.Game.prototype = {
 			}
 		},
 
+	heroHurted: function()
+		{
+		// GETTING THE CURRENT TIME
+		var currentTime = this.getCurrentTime();
+
+		// CHECKING IF AT LEAST 500 MS PASSED SINCE THE LAST RECEIVED ATTACK
+		if (currentTime>this.lastReceivedAttack+500)
+			{
+			// UPDATING THE LAST RECEIVED ATTACK TIMESTAMP
+			this.lastReceivedAttack = currentTime;
+
+			// CAUSING DAMAGE TO THE HERO
+			this.setHealth(this.statsHealth - 5);
+			}
+		},
+
 	heroCanJump: function()
 		{
 		var yAxis = p2.vec2.fromValues(0, 1);
@@ -923,6 +955,22 @@ AdventureGame.Game.prototype = {
 			}
 
 		return result;
+		},
+
+	setHealth: function (newHealth)
+		{
+		// UPDATING THE PLAYER HEALTH VALUE
+		this.statsHealth = newHealth;
+
+		// DESTROYING THE PREVIOUS HEALTH BAR INDICATOR
+		this.imageStatsHealthValue.destroy();
+
+		// CREATING A NEW HEALTH BAR INDICATOR WITH THE NEW HEALTH VALUE
+		this.imageStatsHealthValue = game.add.graphics();
+		this.imageStatsHealthValue.beginFill(0x9cba45, 1);
+		this.imageStatsHealthValue.drawRect(10, 12, this.statsHealth * 195 / 100, 14, 1);
+		this.imageStatsHealthValue.mask = this.imageStatsHealthMask;
+		this.imageStatsHealthContainer.addChild(this.imageStatsHealthValue);
 		},
 
 	moveLandscape: function(movingRight)
@@ -980,6 +1028,11 @@ AdventureGame.Game.prototype = {
 
 		// SHOWING THE GAME ENDED MESSAGE
 		this.showToast(STRING_GAMEWON, false);
+		},
+
+	getCurrentTime: function()
+		{
+		return window.performance && window.performance.now && window.performance.timing && window.performance.timing.navigationStart ? window.performance.now() + window.performance.timing.navigationStart : Date.now();
 		},
 
 	showToast: function(myText, mustBeDeleted)
