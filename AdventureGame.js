@@ -618,7 +618,7 @@ AdventureGame.Game.prototype = {
 			}
 
 		// CHECKING IF THE HERO IS DEAD
-		if (this.statsHealth<0)
+		if (this.statsHealth<=0)
 			{
 			// ENDING THE GAME
 			this.gameOver();
