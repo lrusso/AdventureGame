@@ -224,6 +224,7 @@ AdventureGame.Game = function (game)
 	this.heroFacing = null;
 	this.enemy = null;
 	this.enemyFacing = null;
+	this.enemyHealth = null;
 	this.abyss = null;
 	this.endLine = null;
 	this.cursors = null;
@@ -283,6 +284,7 @@ AdventureGame.Game.prototype = {
 		this.heroFacing = "right";
 		this.enemy = null;
 		this.enemyFacing = "right";
+		this.enemyHealth = 5;
 		this.abyss = null;
 		this.endLine = null;
 		this.cursors = null;
@@ -442,6 +444,17 @@ AdventureGame.Game.prototype = {
 		this.sign = game.add.sprite(60, 424, "imageSign");
 		this.sign.fixedToCamera = false;
 
+		// ADDING THE ENEMY
+		this.enemy = game.add.sprite(955, 360, "imageEnemy");
+		this.enemy.animations.add("moveRight", [0, 1, 2, 3, 4, 5], 7, true);
+		this.enemy.animations.add("moveLeft", [6, 7, 8, 9, 10, 11], 7, true);
+
+		// SETTING THAT THE ENEMY WILL BE SHOWING THE MOVING TO THE RIGHT ANIMATION
+		this.enemy.animations.play("moveRight");
+
+		// SETTING THAT THE ENEMY WILL BE MOVING TO THE RIGHT
+		this.enemyFacing = "right";
+
 		// ADDING THE HERO
 		this.hero = game.add.sprite(35, 169, "imageHero");
 		this.hero.animations.add("standLeft", [0, 1, 2, 3, 4, 5], 10, true);
@@ -482,17 +495,6 @@ AdventureGame.Game.prototype = {
 
 		// SETTING THAT THE CAMERA WILL FOLLOW THE HERO
 		this.game.camera.follow(this.hero);
-
-		// ADDING THE ENEMY
-		this.enemy = game.add.sprite(955, 360, "imageEnemy");
-		this.enemy.animations.add("moveRight", [0, 1, 2, 3, 4, 5], 7, true);
-		this.enemy.animations.add("moveLeft", [6, 7, 8, 9, 10, 11], 7, true);
-
-		// SETTING THAT THE ENEMY WILL BE SHOWING THE MOVING TO THE RIGHT ANIMATION
-		this.enemy.animations.play("moveRight");
-
-		// SETTING THAT THE ENEMY WILL BE MOVING TO THE RIGHT
-		this.enemyFacing = "right";
 
 		// ADDING THE ABYSS CHECKER
 		this.abyss = game.add.sprite(1155, 500, "imageLimitChecker");
@@ -614,8 +616,17 @@ AdventureGame.Game.prototype = {
 		// CHECKING IF THE ENEMY IS HURTING THE HERO
 		if (this.checkEnemyOverlapping(this.hero,this.enemy)==true)
 			{
-			// CAUSING DAMAGE TO THE HERO
-			this.heroHurted();
+			if ((this.hero.animations.currentAnim.name=="attackLeft" && this.enemyFacing=="right") ||
+				(this.hero.animations.currentAnim.name=="attackRight" && this.enemyFacing=="left"))
+				{
+				// CAUSING DAMAGE TO THE ENEMY
+				this.enemyHurted();
+				}
+			else
+				{
+				// CAUSING DAMAGE TO THE HERO
+				this.heroHurted();
+				}
 			}
 
 		// CHECKING IF THE USER IS WITHIN THE "DAMAGE RECEIVED" TIME FRAME IN ORDER BLINK THE HERO SPRITE
@@ -644,6 +655,13 @@ AdventureGame.Game.prototype = {
 			{
 			// ENDING THE GAME
 			this.gameOver();
+			}
+
+		// CHECKING IF THE HERO IS DEAD
+		if (this.enemyHealth<=0)
+			{
+			// MOVING THE ENEMY OUT OF THE SCREEN
+			this.enemy.position.y = -999;
 			}
 
 		// CHECKING IF THE ENEMY IS MOVING TO THE RIGHT
@@ -957,6 +975,12 @@ AdventureGame.Game.prototype = {
 			// CAUSING DAMAGE TO THE HERO
 			this.setHealth(this.statsHealth - 5);
 			}
+		},
+
+	enemyHurted: function()
+		{
+		// CAUSING DAMAGE TO THE ENEMY
+		this.enemyHealth = this.enemyHealth - 5;
 		},
 
 	heroCanJump: function()
