@@ -616,7 +616,7 @@ AdventureGame.Game.prototype = {
 		// CHECKING IF THE ENEMY IS HURTING THE HERO
 		if (this.checkEnemyOverlapping(this.hero,this.enemy)==true)
 			{
-			// CHECKING IF THE HERO ATTACKED THE ENEMY
+			// CHECKING IF THE HERO IS ATTACKING THE ENEMY
 			if ((this.hero.animations.currentAnim.name=="attackLeft" && this.enemyFacing=="right") ||
 				(this.hero.animations.currentAnim.name=="attackRight" && this.enemyFacing=="left"))
 				{
