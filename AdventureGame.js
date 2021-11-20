@@ -467,6 +467,17 @@ AdventureGame.Game.prototype = {
 		this.enemy.animations.add("moveRight", [0, 1, 2, 3, 4, 5], 7, true);
 		this.enemy.animations.add("moveLeft", [6, 7, 8, 9, 10, 11], 7, true);
 		this.enemyDying = this.enemy.animations.add("dying", [12, 13, 14, 15, 16, 17, 18], 7, false);
+		this.enemyDying.onStart.add(function()
+			{
+			// CHECKING IF THE SOUND IS ENABLED
+			if (GAME_SOUND_ENABLED==true)
+				{
+				// PLAYING THE SLASH SOUND
+				this.audioPlayer = this.add.audio("soundEnemyDeath");
+				this.audioPlayer.volume = 0.5;
+				this.audioPlayer.play();
+				}
+			}, this);
 		this.enemyDying.onComplete.add(function()
 			{
 			// MOVING THE ENEMY OFF THE SCREEN
@@ -712,8 +723,8 @@ AdventureGame.Game.prototype = {
 		if (this.checkEnemyOverlapping(this.hero,this.enemy)==true)
 			{
 			// CHECKING IF THE HERO IS ATTACKING THE ENEMY
-			if ((this.hero.animations.currentAnim.name=="attackLeft" && this.enemyFacing=="right") ||
-				(this.hero.animations.currentAnim.name=="attackRight" && this.enemyFacing=="left"))
+			if ((this.hero.animations.currentAnim.name=="attackLeft" && this.hero.position.x>=this.enemy.position.x) ||
+				(this.hero.animations.currentAnim.name=="attackRight" && this.hero.position.x<=this.enemy.position.x))
 				{
 				// CAUSING DAMAGE TO THE ENEMY
 				this.enemyHurted();
@@ -762,15 +773,6 @@ AdventureGame.Game.prototype = {
 				{
 				// SETTING THAT THE ENEMY WILL BE SHOWING THE DYING ANIMATION
 				this.enemy.animations.play("dying");
-
-				// CHECKING IF THE SOUND IS ENABLED
-				if (GAME_SOUND_ENABLED==true)
-					{
-					// PLAYING THE SLASH SOUND
-					this.audioPlayer = this.add.audio("soundEnemyDeath");
-					this.audioPlayer.volume = 0.5;
-					this.audioPlayer.play();
-					}
 				}
 			}
 
@@ -1192,8 +1194,8 @@ AdventureGame.Game.prototype = {
 		var boundsB = spriteB.getBounds();
 
 		// REMOVING THE ENEMY'S PADDING
-		boundsB.x = boundsB.x + 10;
-		boundsB.width = boundsB.width - 20;
+		boundsB.x = boundsB.x + 5;
+		boundsB.width = boundsB.width - 10;
 
 		return Phaser.Rectangle.intersects(boundsA, boundsB);
 		},
