@@ -614,7 +614,29 @@ AdventureGame.Game.prototype = {
 		// CHECKING IF THE ENEMY IS HURTING THE HERO
 		if (this.checkOverlapping(this.hero,this.enemy)==true)
 			{
+			// CAUSING DAMAGE TO THE HERO
 			this.heroHurted();
+			}
+
+		// CHECKING IF THE USER IS WITHIN THE "DAMAGE RECEIVED" TIME FRAME IN ORDER BLINK THE HERO SPRITE
+		if (this.lastReceivedAttack<this.getCurrentTime()+500 && this.lastReceivedAttack>this.getCurrentTime()-500)
+			{
+			// CHECKING IF THE SPRITE IS HIDDEN
+			if (this.hero.alpha==0)
+				{
+				// SHOWING THE SPRITE
+				this.hero.alpha = 1;
+				}
+				else
+				{
+				// HIDING THE SPRITE
+				this.hero.alpha = 0;
+				}
+			}
+			else
+			{
+			// SHOWING THE SPRITE
+			this.hero.alpha = 1;
 			}
 
 		// CHECKING IF THE HERO IS DEAD
