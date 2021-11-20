@@ -1050,6 +1050,7 @@ AdventureGame.Game.prototype = {
 
 		return Phaser.Rectangle.intersects(boundsA, boundsB);
 		},
+
 	gameOver: function()
 		{
 		// SETTING THAT THE GAME IS OVER
