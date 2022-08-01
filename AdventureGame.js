@@ -1235,6 +1235,9 @@ AdventureGame.Game.prototype = {
 			// CHECKING IF THE BACKGROUND MUSIC PLAYER IS CREATED
 			if(MUSIC_PLAYER!=null)
 				{
+				// PAUSING THE BACKGROUND MUSIC PLAYER
+				MUSIC_PLAYER.pause();
+
 				// DESTROYING THE BACKGROUND MUSIC PLAYER
 				MUSIC_PLAYER.destroy();
 				}
@@ -1254,6 +1257,9 @@ AdventureGame.Game.prototype = {
 			// CHECKING IF THE AUDIO PLAYER IS CREATED
 			if(this.audioPlayer!=null)
 				{
+				// PAUSING THE AUDIO PLAYER
+				this.audioPlayer.pause();
+
 				// DESTROYING THE AUDIO PLAYER
 				this.audioPlayer.destroy();
 				}
