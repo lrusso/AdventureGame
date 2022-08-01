@@ -37,6 +37,8 @@ if (userLanguage.substring(0,2)=="es")
 var GAME_OVER = false;
 var GAME_SOUND_ENABLED = false;
 
+var MUSIC_PLAYER = null;
+
 var AdventureGame = {};
 
 AdventureGame.Preloader = function(){};
@@ -275,7 +277,9 @@ AdventureGame.Game = function (game)
 	this.toastText = null;
 	this.endedGame = null;
 	this.audioPlayer = null;
-	this.musicPlayer = null;
+	this.clickTimestamp = null;
+	this.clickPositionX = null;
+	this.clickPositionY = null;
 
 	// SCALING THE CANVAS SIZE FOR THE GAME
 	function resizeF()
@@ -337,6 +341,9 @@ AdventureGame.Game.prototype = {
 		this.toastText = null;
 		this.endedGame = false;
 		this.audioPlayer = null;
+		this.clickTimestamp = null;
+		this.clickPositionX = null;
+		this.clickPositionY = null;
 		},
 
 	create: function()
@@ -594,8 +601,14 @@ AdventureGame.Game.prototype = {
 		if (GAME_SOUND_ENABLED==false){this.buttonSoundOnGame.visible = false;}
 		this.buttonSoundOnGame.fixedToCamera = true;
 		this.buttonSoundOnGame.inputEnabled = true;
+		this.buttonSoundOnGame.events.onInputDown.add(function(){if(this.clickTimestamp==null){this.clickTimestamp=this.getCurrentTime();this.clickPositionX=this.game.input.activePointer.position.x;this.clickPositionY=this.game.input.activePointer.position.y;}},this);
 		this.buttonSoundOnGame.events.onInputUp.add(function()
 			{
+			// REJECTING ANY SLIDE AND LONG PRESS EVENT - BUGFIX FOR SAFARI ON IOS FOR ENABLING THE AUDIO CONTEXT
+			if (Math.abs(this.game.input.activePointer.position.x-this.clickPositionX)>=25){this.clickTimestamp=null;return;}
+			if (Math.abs(this.game.input.activePointer.position.y-this.clickPositionY)>=25){this.clickTimestamp=null;return;}
+			if (this.getCurrentTime()-this.clickTimestamp>=500){this.clickTimestamp=null;return;}
+
 			// SETTING THAT THE SOUND IS DISABLED
 			GAME_SOUND_ENABLED = false;
 
@@ -608,11 +621,17 @@ AdventureGame.Game.prototype = {
 			this.buttonSoundOnGameShadow.visible = false;
 
 			// CHECKING IF THE MUSIC PLAYER IS CREATED
-			if (this.musicPlayer!=null)
+			if (MUSIC_PLAYER!=null)
 				{
-				// PAUSING THE BACKGROUND MUSIC
-				this.musicPlayer.pause();
+				// PAUSING THE BACKGROUND MUSIC PLAYER
+				MUSIC_PLAYER.pause();
+
+				// DESTROYING THE BACKGROUND MUSIC PLAYER
+				MUSIC_PLAYER.destroy();
 				}
+
+			// CLEARING THE CLICK TIMESTAMP VALUE
+			this.clickTimestamp = null;
 			},this);
 
 		// ADDING THE SOUND OFF GAME ICON
@@ -625,8 +644,14 @@ AdventureGame.Game.prototype = {
 		if (GAME_SOUND_ENABLED==true){this.buttonSoundOffGame.visible=false;}
 		this.buttonSoundOffGame.inputEnabled = true;
 		this.buttonSoundOffGame.fixedToCamera = true;
+		this.buttonSoundOffGame.events.onInputDown.add(function(){if(this.clickTimestamp==null){this.clickTimestamp=this.getCurrentTime();this.clickPositionX=this.game.input.activePointer.position.x;this.clickPositionY=this.game.input.activePointer.position.y;}},this);
 		this.buttonSoundOffGame.events.onInputUp.add(function()
 			{
+			// REJECTING ANY SLIDE AND LONG PRESS EVENT - BUGFIX FOR SAFARI ON IOS FOR ENABLING THE AUDIO CONTEXT
+			if (Math.abs(this.game.input.activePointer.position.x-this.clickPositionX)>=25){this.clickTimestamp=null;return;}
+			if (Math.abs(this.game.input.activePointer.position.y-this.clickPositionY)>=25){this.clickTimestamp=null;return;}
+			if (this.getCurrentTime()-this.clickTimestamp>=500){this.clickTimestamp=null;return;}
+
 			// SETTING THAT THE SOUND IS ENABLED
 			GAME_SOUND_ENABLED = true;
 
@@ -638,21 +663,20 @@ AdventureGame.Game.prototype = {
 			this.buttonSoundOffGame.visible = false;
 			this.buttonSoundOffGameShadow.visible = false;
 
-			// CHECKING IF THE MUSIC PLAYER IS NOT CREATED
-			if (this.musicPlayer==null)
-				{
-				// SETTING THE AUDIO FILE THAT WILL BE PLAYED AS BACKGROUND MUSIC
-				this.musicPlayer = this.add.audio("musicBackground");
+			// SETTING THE AUDIO FILE THAT WILL BE PLAYED AS BACKGROUND MUSIC
+			MUSIC_PLAYER = this.add.audio("musicBackground");
 
-				// SETTING THE BACKGROUND MUSIC VOLUME
-				this.musicPlayer.volume = 0.3;
+			// SETTING THE BACKGROUND MUSIC VOLUME
+			MUSIC_PLAYER.volume = 0.3;
 
-				// SETTING THAT THE BACKGROUND MUSIC WILL BE LOOPING
-				this.musicPlayer.loop = true;
-				}
+			// SETTING THAT THE BACKGROUND MUSIC WILL BE LOOPING
+			MUSIC_PLAYER.loop = true;
 
 			// PLAYING THE BACKGROUND MUSIC
-			this.musicPlayer.play();
+			MUSIC_PLAYER.play();
+
+			// CLEARING THE CLICK TIMESTAMP VALUE
+			this.clickTimestamp = null;
 			},this);
 
 		// GETTING THE CURSOR KEY INPUTS
@@ -1209,23 +1233,23 @@ AdventureGame.Game.prototype = {
 		if (GAME_SOUND_ENABLED==true)
 			{
 			// CHECKING IF THE BACKGROUND MUSIC PLAYER IS CREATED
-			if(this.musicPlayer!=null)
+			if(MUSIC_PLAYER!=null)
 				{
 				// DESTROYING THE BACKGROUND MUSIC PLAYER
-				this.musicPlayer.destroy();
+				MUSIC_PLAYER.destroy();
 				}
 
 			// SETTING THE AUDIO FILE THAT WILL BE PLAYED AS BACKGROUND MUSIC
-			this.musicPlayer = this.add.audio("musicBackground");
+			MUSIC_PLAYER = this.add.audio("musicBackground");
 
 			// SETTING THE BACKGROUND MUSIC VOLUME
-			this.musicPlayer.volume = 0.3;
+			MUSIC_PLAYER.volume = 0.3;
 
 			// SETTING THAT THE BACKGROUND MUSIC WILL BE LOOPING
-			this.musicPlayer.loop = true;
+			MUSIC_PLAYER.loop = true;
 
 			// PLAYING THE BACKGROUND MUSIC
-			this.musicPlayer.play();
+			MUSIC_PLAYER.play();
 
 			// CHECKING IF THE AUDIO PLAYER IS CREATED
 			if(this.audioPlayer!=null)
